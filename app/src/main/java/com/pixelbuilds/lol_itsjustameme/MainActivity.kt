@@ -4,38 +4,58 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.media.Image
-import androidx.appcompat.app.AppCompatActivity
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-    lateinit var memeURL: String
+    private lateinit var memeURL: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val dialog = MaterialAlertDialogBuilder(this)
+        val dialog1 = MaterialAlertDialogBuilder(this)
             .setTitle("Content Warning")
             .setMessage("Meme(s) Which Will Be Displayed In This App Are Collected From An API, Developer Is Not Responsible If Any InAppropriate Meme Appears")
-            .setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which -> })
+            .setPositiveButton("Ok") { dialog, which -> }
             .setCancelable(false)
-        dialog.show()
+        dialog1.show()
+        val networkManager =
+            this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo: NetworkInfo? = networkManager.activeNetworkInfo
+        val isConnected: Boolean = networkInfo?.isConnectedOrConnecting == true
+        if (!isConnected) {
+            val dialog2 = MaterialAlertDialogBuilder(this)
+                .setTitle("Network Issue")
+                .setMessage("Seems Like You Didn't Connected To The Internet, Please Connect Again And TryAgain")
+                .setPositiveButton(
+                    "Try Again"
+                ) { dialog, which ->
+                    if (!isConnected) {
+                        Toast.makeText(this, "Network Not Detected", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Connected To The Internet", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+            dialog2.show()
+        } else {
+            Toast.makeText(this, "Connected To The Internet", Toast.LENGTH_SHORT).show()
+        }
+
         loadMeme()
     }
 

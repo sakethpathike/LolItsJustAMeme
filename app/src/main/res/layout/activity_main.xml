@@ -45,7 +45,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/shareMeme"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
